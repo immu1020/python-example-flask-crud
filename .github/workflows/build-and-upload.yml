@@ -1,0 +1,35 @@
+name: Package and Upload Flask CRUD App
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Package application
+        run: |
+          zip -r flask-crud-app.zip . -x .git/*
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flask-crud-app
+          path: flask-crud-app.zip
